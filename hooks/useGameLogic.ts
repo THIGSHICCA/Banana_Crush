@@ -55,17 +55,17 @@ export function useGameLogic<T>({ gameMode, fetchPuzzle }: UseGameLogicProps<T>)
 
     const handleCorrect = () => {
         if (!difficulty) return;
-        
+
         const points = 100 * (GAME_SETTINGS[gameMode][difficulty].multiplier);
         const newScore = score + points;
         setScore(newScore);
         playSound('correct');
         updateIntensity(newScore);
-        
+
         if (newScore > highScore) {
             setHighScore(newScore);
         }
-        
+
         loadNewPuzzle(difficulty);
     };
 
@@ -80,10 +80,13 @@ export function useGameLogic<T>({ gameMode, fetchPuzzle }: UseGameLogicProps<T>)
         playSound('incorrect');
         const newLives = lives - 1;
         setLives(newLives);
-        
+
         if (newLives <= 0) {
             setGameOver(true);
             handleGameOver(score);
+        } else {
+            // Refresh the API to get a new puzzle after an incorrect answer
+            loadNewPuzzle(difficulty ?? undefined);
         }
     };
 
